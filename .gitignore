@@ -1,3 +1,4 @@
 .vscode/
 mods/
+db.json
 /target
