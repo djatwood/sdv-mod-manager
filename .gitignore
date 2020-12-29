@@ -1,4 +1,4 @@
 .vscode/
 mods/
-db.json
+config.json
 /target

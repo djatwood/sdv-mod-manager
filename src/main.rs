@@ -1,45 +1,33 @@
-pub use polodb_core::db::Database;
-pub use polodb_core::db::DbResult;
 use std::env;
-use std::fs;
+use storage;
+
+const CONFIGLOCATION: &str = "./config.json";
 
 fn main() {
-    let mut db = match Database::open("db.json") {
-        Err(e) => panic!("Failed to connect to database: {}", e),
-        Ok(db) => db,
-    };
-    let mut store = match db.collection("mods") {
-        Err(e) => panic!("Failed to get collection mods: {}", e),
-        Ok(store) => store,
-    };
-
+    let db = storage::open(String::from(CONFIGLOCATION)).unwrap();
     let args: Vec<String> = env::args().collect();
 
     match args[1].as_str() {
         "import" => import(&args[2]),
-        "mods" => {
-            let status = if args.len() > 2 {
-                String::from(&args[2])
-            } else {
-                String::new()
-            };
-            list_mods(&status);
-        }
+        "mods" => list_mods(db, args.get(2)),
         _ => println!("TODO: HELP MENU"),
-    }
-
-    let paths = fs::read_dir("../Mods").unwrap();
-    for path in paths {
-        println!("Name: {}", path.unwrap().path().display())
     }
 }
 
-fn list_mods(kind: &String) {
-    match kind.as_str() {
-        "enabled" => println!("list enabled mods"),
-        "disabled" => println!("list disabled mods"),
-        "" => println!("list all mods"),
-        _ => println!("TODO: show options"),
+fn list_mods(db: storage::DB, name: Option<&String>) {
+    let kind = match name {
+        None => "default",
+        Some(k) => k,
+    };
+
+    let list = match db.get(&kind) {
+        None => return println!("No modlist named {}", kind),
+        Some(l) => l,
+    };
+
+    println!("Modlist {} has {} mods", kind, list.len());
+    for m in list {
+        println!("  {}", m);
     }
 }
 
