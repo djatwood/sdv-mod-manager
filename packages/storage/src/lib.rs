@@ -75,6 +75,7 @@ pub fn open(filename: String) -> Result<DB, String> {
             Ok(p) => p,
         };
 
+        // TODO: Make this cross platform
         let manifest = match File::open(format!("{}/manifest.json", path.path().display())) {
             Err(e) => {
                 println!("Failed to open mod {}", e);

@@ -6,6 +6,7 @@ use std::io::ErrorKind;
 use std::path::Path;
 use storage;
 
+// TODO: Make this cross platform
 const CONFIGLOCATION: &str = "./config.json";
 
 fn main() {
@@ -81,6 +82,7 @@ fn copy_dir(dir: &str) -> Result<(), String> {
         Some(n) => n,
         None => return Err(format!("Failed to parse name")),
     };
+    // TODO: Make this cross platform
     match fs::create_dir(format!("./mods/{}", dir_name)) {
         Ok(()) => (),
         Err(e) => {
@@ -90,6 +92,7 @@ fn copy_dir(dir: &str) -> Result<(), String> {
         }
     }
 
+    // TODO: Make this cross platform
     let paths = match glob(format!("{}/**/*", dir.display()).as_str()) {
         Ok(p) => p,
         Err(e) => {
@@ -115,8 +118,9 @@ fn copy_dir(dir: &str) -> Result<(), String> {
         };
 
         println!("  {}/{}", dir_name, relative.display());
-
+        
         if path.is_dir() {
+            // TODO: Make this cross platform
             let name = format!("./mods/{}/{}", dir_name, relative.display());
             match fs::create_dir_all(name) {
                 Ok(()) => (),
@@ -129,6 +133,7 @@ fn copy_dir(dir: &str) -> Result<(), String> {
             continue;
         }
 
+        // TODO: Make this cross platform
         let location = format!("./mods/{}/{}", dir_name, relative.display());
         match File::create(location.as_str()) {
             Ok(_) => (),
